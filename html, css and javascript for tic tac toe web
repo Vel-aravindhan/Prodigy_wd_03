@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #52c9d3;
+}
+
+.container {
+    text-align: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin: 20px auto;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: #ee628c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+.cell:hover {
+    background-color: #ce79d4;
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+</style>
+<body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button id="reset">Reset</button>
+        <div id="message"></div>
+    </div>
+    <script>
+      const cells = document.querySelectorAll('.cell');
+const resetButton = document.getElementById('reset');
+let currentPlayer = 'X';
+let board = ['', '', '', '', '', '', '', '', ''];
+let isGameActive = true;
+
+const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
+
+function handleCellClick(event) {
+    const cell = event.target;
+    const index = cell.getAttribute('data-index');
+
+    if (board[index] !== '' || !isGameActive) {
+        return;
+    }
+
+    board[index] = currentPlayer;
+    cell.textContent = currentPlayer;
+    cell.classList.add('taken');
+
+    checkResult();
+}
+
+function checkResult() {
+    let roundWon = false;
+
+    for (let i = 0; i < winningConditions.length; i++) {
+        const [a, b, c] = winningConditions[i];
+        if (board[a] === '' || board[b] === '' || board[c] === '') {
+            continue;
+        }
+        if (board[a] === board[b] && board[a] === board[c]) {
+            roundWon = true;
+            break;
+        }
+    }
+
+    if (roundWon) {
+        alert(`Player ${currentPlayer} wins!`);
+        isGameActive = false;
+        return;
+    }
+
+    if (!board.includes('')) {
+        alert("It's a draw!");
+        isGameActive = false;
+        return;
+    }
+
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+}
+
+function resetGame() {
+    currentPlayer = 'X';
+    board = ['', '', '', '', '', '', '', '', ''];
+    isGameActive = true;
+
+    cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('taken');
+    });
+}
+
+cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+resetButton.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
